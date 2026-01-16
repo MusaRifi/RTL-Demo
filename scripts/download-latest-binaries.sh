@@ -8,16 +8,12 @@ cd rtl-release-clang
 
 BASE_URL="https://github.com/ReflectCxx/ReflectionTemplateLibrary-CPP/releases/download/latest"
 
-curl -L -o RTLTestRunApp-linux-clang \
+curl -L -o RTLTestRunApp \
   "$BASE_URL/RTLTestRunApp-clang"
 
-curl -L -o RTLBenchmarkApp-clang \
+curl -L -o RTLBenchmarkApp \
   "$BASE_URL/RTLBenchmarkApp-clang"
-
-# Rename to clean names
-mv RTLTestRunApp-clang RTLTestRunApp
-mv RTLBenchmarkApp-clang RTLBenchmarkApp
-
+  
 # Make executable
 chmod +x RTLTestRunApp RTLBenchmarkApp
 
