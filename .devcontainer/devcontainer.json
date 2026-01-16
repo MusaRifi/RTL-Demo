@@ -1,7 +1,7 @@
 {
   "name": "RTL Demo",
   "image": "mcr.microsoft.com/devcontainers/cpp:ubuntu",
-  "postCreateCommand": "cmake -S . -B build && cmake --build build && ./bin/RTLDemoApp && chmod +x scripts/download-latest-binaries.sh && sleep 5 && ./scripts/download-latest-binaries.sh",
+  "postCreateCommand": "cmake -S . -B build && cmake --build build && chmod +x scripts/download-latest-binaries.sh && ./scripts/download-latest-binaries.sh",
   "customizations": {
     "vscode": {
       "extensions": ["ms-vscode.cpptools"]
