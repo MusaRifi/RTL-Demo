@@ -52,9 +52,9 @@ This demonstrates real, type-safe runtime reflection in modern C++.
 If you prefer to run the demo locally:
 
 ```bash
-cmake -S . -B build
-cmake --build build
-./bin/RTLDemoApp
+mkdir build && cd build
+cmake ../ -G "<Generator>"    # Use a C++20-compatible compiler
+cmake --build .
 ```
 
 ---
