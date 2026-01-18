@@ -15,6 +15,9 @@ const rtl::CxxMirror& cxx::mirror()
         rtl::type().member<Person>().constructor<std::string, int>().build(),
 
         // Register method
+        rtl::type().member<Person>().method("setName").build(&Person::setName),
+
+        // Register method
         rtl::type().member<Person>().method("getName").build(&Person::getName)
     });
 
