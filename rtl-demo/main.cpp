@@ -126,6 +126,9 @@ int main()
                 if (err1 != rtl::error::None) {
                     die(err1);
                 }
+                else {
+                    std::cout << "\n[rtl] cloning successful.";
+                }
 
                 std::cout << "\n[rtl] Calling getName() on cloned object.\n";
                 auto [err, ret] = getName(person1)();
