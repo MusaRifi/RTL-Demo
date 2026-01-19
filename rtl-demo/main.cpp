@@ -81,7 +81,7 @@ namespace
             die(setName.get_init_error());
         }
 
-        auto [err, robj] = setName(pTarget)("Walter");   // robj: type std::optional<>, empty since the function is void.
+        auto [err, optnl] = setName(pTarget)("Walter"); // optnl: type std::optional<>, empty since the function is void.
         if (err != rtl::error::None) {
             die(err);
         }
@@ -97,11 +97,12 @@ namespace
             die(getName.get_init_error());
         }
 
-        auto [err, robj] = getName(pTarget)(); // robj: type std::optional<std::string>, non empty.
+        auto [err, optnl] = getName(pTarget)(); // optnl: type std::optional<std::string>.
         if (err != rtl::error::None) {
             die(err);
         }
-        return robj.value();
+        // not empty, since the call succeeded (err == rtl::err::None).
+        return optnl.value();
     }
 
 
