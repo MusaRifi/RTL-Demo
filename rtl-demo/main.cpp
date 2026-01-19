@@ -146,7 +146,7 @@ int main()
         std::string nameStr = callGetName_knownTypes(*oGetName);
         std::cout << "\n[rtl] getName() returned: \"" << nameStr << "\"";
 
-        std::cout << "\n[rtl] Creating instance on stack.\n";
+        std::cout << "\n[rtl] Creating instance on stack...\n";
         {
             rtl::RObject person = callDefaultCtor(*classPerson);
 
@@ -167,7 +167,7 @@ int main()
         }
         std::cout << "\n[rtl] Stack instance destroyed.";
 
-        std::cout << "\n[rtl] Creating instance on Heap.\n";
+        std::cout << "\n[rtl] Creating instance on Heap...\n";
         {
             rtl::RObject person = callOverloadedCtor(*classPerson);
 
@@ -179,7 +179,7 @@ int main()
                 std::cout << "\n[rtl] getName() returned: \"" << name << "\"";
             }
 
-            std::cout << "\n[rtl] Cloning reflected object on stack.\n";
+            std::cout << "\n[rtl] Cloning reflected object on stack...\n";
             {
                 auto [err, personCp] = person.clone<rtl::alloc::Stack>();
                 if (err != rtl::error::None) {
