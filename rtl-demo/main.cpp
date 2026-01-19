@@ -13,12 +13,115 @@ namespace
         std::exit(0);
     }
 
+
     [[noreturn]] void die(const char* msg)
     {
         std::cerr << "\n[error] " << msg << "\n";
         std::exit(0);
     }
+
+
+    rtl::RObject callDefaultCtor(rtl::Record& pClass)
+    {
+        // Materialize the default constructor.
+        rtl::constructor<> personCtor = pClass.ctorT<>();
+
+        // Default ctor is gauranteed to be found, no need to check before calling.
+        auto [err, person] = personCtor(rtl::alloc::Stack);
+        if (err != rtl::error::None) {
+            die(err);
+        }
+        else {
+            std::cout << "\n[rtl] construction successful, returning the object.\n";
+        }
+        return std::move(person);
+    }
+
+
+    rtl::RObject callOverloadedCtor(rtl::Record& pClass)
+    {
+        // Materialize the overloaded constructor.
+        rtl::constructor<std::string, int> personCtor = pClass.ctorT<std::string, int>();
+        if (!personCtor) {  // Constructor with expected signature not found.
+            die(personCtor.get_init_error());
+        }
+
+        auto [err, person] = personCtor(rtl::alloc::Heap, "Bernard", 42);
+        if (err != rtl::error::None) {
+            die(err);
+        }
+        else {
+            std::cout << "\n[rtl] construction successful, returning the object.";
+        }
+        return std::move(person);
+    }
+
+
+    std::string callGetName_knownTypes(rtl::Method& pMethod) 
+    {
+        // Known 'Person' & return-type.
+        rtl::method<Person, std::string()> getName = pMethod.targetT<Person>().argsT()
+                                                            .returnT<std::string>();
+        if (!getName) {
+            die(getName.get_init_error());
+        }
+
+        // rtl::method<> works for both- rvalue/lvalue.
+        return getName(Person("Alex", 10))();    // rvalue, destroyed right after the call.
+    }
+
+
+    void callSetName_erasedTargetKnownReturn(rtl::Method& pMethod, rtl::RObject& pTarget)
+    {
+        // erased 'Person' & Known return-type.
+        rtl::method<rtl::RObject, void(std::string)> setName = pMethod.targetT()
+                                                                      .argsT<std::string>()
+                                                                      .returnT<void>();
+        if (!setName) {
+            die(setName.get_init_error());
+        }
+
+        auto [err, robj] = setName(pTarget)("Walter");   // robj: type std::optional<>, empty since the function is void.
+        if (err != rtl::error::None) {
+            die(err);
+        }
+    }
+
+
+    std::string callGetName_erasedTargetKnownReturn(rtl::Method& pMethod, rtl::RObject& pTarget)
+    {
+        // erased 'Person' & Known return-type.
+        rtl::method<rtl::RObject, std::string()> getName = pMethod.targetT().argsT()
+                                                                  .returnT<std::string>();
+        if (!getName) {
+            die(getName.get_init_error());
+        }
+
+        auto [err, robj] = getName(pTarget)(); // robj: type std::optional<std::string>, nont empty.
+        if (err != rtl::error::None) {
+            die(err);
+        }
+        return robj.value();
+    }
+
+
+    rtl::RObject callGetName_erasedTargetAndReturn(rtl::Method& pMethod, rtl::RObject& pTarget)
+    {
+        // Known 'Person' & return-type.
+        rtl::method<rtl::RObject, rtl::Return()> getName = pMethod.targetT().argsT().returnT();
+
+        if (!getName) {
+            die(getName.get_init_error());
+        }
+
+        auto [err, robj] = getName(pTarget)(); // robj: type std::optional<std::string>, nont empty.
+        if (err != rtl::error::None) {
+            die(err);
+        }
+        return std::move(robj);
+    }
 }
+
 
 int main()
 {
@@ -37,29 +140,14 @@ int main()
             die("Method \"getName\" not found.");
         }
         std::cout << " [ok]";
-
         std::cout << "\n[rtl] Calling getName() with complete type awareness.\n";
-        // Typed target & return.
-        rtl::method<Person, std::string()> getName = oGetName->targetT<Person>()
-                                                             .argsT().returnT<std::string>();
-        if (!getName) {
-            die(getName.get_init_error());
-        }
 
-        // rtl::method<> works for both- rvalue/lvalue.
-        std::string nameStr = getName(Person("Alex", 10))();
+        std::string nameStr = callGetName_knownTypes(*oGetName);
         std::cout << "\n[rtl] getName() returned: \"" << nameStr << "\"";
 
-        rtl::constructor<> defaultCtor = classPerson->ctorT<>();
         std::cout << "\n[rtl] Creating instance on stack.\n";
         {
-            auto [err0, person] = defaultCtor(rtl::alloc::Stack);
-            if (err0 != rtl::error::None) {
-                die(err0);
-            }
-            else {
-                std::cout << "\n[rtl] construction successful.";
-            }
+            rtl::RObject person = callDefaultCtor(*classPerson);
 
             std::cout << "\n[rtl] Looking up reflected method: setName";
             std::optional<rtl::Method> oSetName = classPerson->getMethod("setName");
@@ -68,76 +156,43 @@ int main()
             }
             std::cout << " [ok]";
 
-            rtl::method<rtl::RObject, void(std::string)> setName = oSetName->targetT()
-                                                                           .argsT<std::string>().returnT<void>();
-            if (!setName) {
-                die(setName.get_init_error());
-            }
-
-            std::cout << "\n[rtl] Calling setName() with target erased & known return type.\n";
-            auto [err1, ret] = setName(person)("Walter");   // Returns rtl::error & std::nullopt.
-            if (err1 != rtl::error::None) {
-                die(err1);
-            }
-
-            rtl::method<rtl::RObject, std::string()> getName = oGetName->targetT().argsT().returnT<std::string>();
-            if (!getName) {
-                die(getName.get_init_error());
-            }
+            std::cout << "\n[rtl] Calling setName() with erased target & known return type.\n";
+            callSetName_erasedTargetKnownReturn(*oSetName, person);
 
             std::cout << "\n[rtl] Calling getName() on mutated object.\n";
-            auto [err2, optnl] = getName(person)(); // Returns rtl::error & std::optional<std::string>.
-            if (err2 != rtl::error::None) {
-                die(err2);
-            }
-            std::cout << "\n[rtl] getName() returned: \"" << optnl.value() << "\"\n";
+
+            std::string name = callGetName_erasedTargetKnownReturn(*oGetName, person);
+            std::cout << "\n[rtl] getName() returned: \"" << name << "\"\n";
         }
         std::cout << "\n[rtl] Stack instance destroyed.";
 
-        rtl::constructor<std::string, int> personCtor = classPerson->ctorT<std::string, int>();
         std::cout << "\n[rtl] Creating instance on Heap.\n";
         {
-            auto [err0, person0] = personCtor(rtl::alloc::Heap, "Bernard", 42);
-            if (err0 != rtl::error::None) {
-                die(err0);
-            }
-            else {
-                std::cout << "\n[rtl] construction successful.";
-            }
-
-            rtl::method<rtl::RObject, rtl::Return()> getName = oGetName->targetT().argsT().returnT();
-            if (!getName) {
-                die(getName.get_init_error());
-            }
+            rtl::RObject person = callOverloadedCtor(*classPerson);
 
             std::cout << "\n[rtl] Calling getName() with erased target & return type.\n";
-            auto [err, ret] = getName(person0)();   // Returns rtl::error & rtl::RObject.
-            if (err != rtl::error::None) {
-                die(err);
-            }
-            if (ret.canViewAs<std::string>()) {
-                const std::string& name = ret.view<std::string>()->get();
+            rtl::RObject retStr = callGetName_erasedTargetAndReturn(*oGetName, person);
+
+            if (retStr.canViewAs<std::string>()) {
+                const std::string& name = retStr.view<std::string>()->get();
                 std::cout << "\n[rtl] getName() returned: \"" << name << "\"";
             }
 
             std::cout << "\n[rtl] Cloning reflected object on stack.\n";
             {
-                auto [err1, person1] = person0.clone<rtl::alloc::Stack>();
-                if (err1 != rtl::error::None) {
-                    die(err1);
+                auto [err, personCp] = person.clone<rtl::alloc::Stack>();
+                if (err != rtl::error::None) {
+                    die(err);
                 }
                 else {
                     std::cout << "\n[rtl] cloning successful.";
                 }
 
                 std::cout << "\n[rtl] Calling getName() on cloned object.\n";
-                auto [err, ret] = getName(person1)();
-                if (err != rtl::error::None) {
-                    die(err);
-                }
+                rtl::RObject retCpStr = callGetName_erasedTargetAndReturn(*oGetName, personCp);
 
-                if (ret.canViewAs<std::string>()) {
-                    const std::string& name = ret.view<std::string>()->get();
+                if (retCpStr.canViewAs<std::string>()) {
+                    const std::string& name = retCpStr.view<std::string>()->get();
                     std::cout << "\n[rtl] getName() returned: \"" << name << "\"\n";
                 }
             }
