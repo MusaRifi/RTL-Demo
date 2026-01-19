@@ -26,7 +26,7 @@ namespace
         // Materialize the default constructor.
         rtl::constructor<> personCtor = pClass.ctorT<>();
 
-        // Default ctor is gauranteed to be found, no need to check before calling.
+        // Default ctor is guaranteed to be found, no need to check before calling.
         auto [err, person] = personCtor(rtl::alloc::Stack);
         if (err != rtl::error::None) {
             die(err);
@@ -59,7 +59,7 @@ namespace
 
     std::string callGetName_knownTypes(rtl::Method& pMethod) 
     {
-        // Known 'Person' & return-type.
+        // Known 'Person' & known return-type.
         rtl::method<Person, std::string()> getName = pMethod.targetT<Person>().argsT()
                                                             .returnT<std::string>();
         if (!getName) {
@@ -90,14 +90,14 @@ namespace
 
     std::string callGetName_erasedTargetKnownReturn(rtl::Method& pMethod, rtl::RObject& pTarget)
     {
-        // erased 'Person' & Known return-type.
+        // Erased 'Person' & known return-type.
         rtl::method<rtl::RObject, std::string()> getName = pMethod.targetT().argsT()
                                                                   .returnT<std::string>();
         if (!getName) {
             die(getName.get_init_error());
         }
 
-        auto [err, robj] = getName(pTarget)(); // robj: type std::optional<std::string>, nont empty.
+        auto [err, robj] = getName(pTarget)(); // robj: type std::optional<std::string>, non empty.
         if (err != rtl::error::None) {
             die(err);
         }
@@ -107,14 +107,14 @@ namespace
 
     rtl::RObject callGetName_erasedTargetAndReturn(rtl::Method& pMethod, rtl::RObject& pTarget)
     {
-        // Known 'Person' & return-type.
+        // Erased 'Person' & erased return-type.
         rtl::method<rtl::RObject, rtl::Return()> getName = pMethod.targetT().argsT().returnT();
 
         if (!getName) {
             die(getName.get_init_error());
         }
 
-        auto [err, robj] = getName(pTarget)(); // robj: type std::optional<std::string>, nont empty.
+        auto [err, robj] = getName(pTarget)(); // robj: type std::optional<std::string>, non empty.
         if (err != rtl::error::None) {
             die(err);
         }
@@ -170,7 +170,7 @@ int main()
         {
             rtl::RObject person = callOverloadedCtor(*classPerson);
 
-            std::cout << "\n[rtl] Calling getName() with erased target & return type.\n";
+            std::cout << "\n[rtl] Calling getName() with erased target & erased return type.\n";
             rtl::RObject retStr = callGetName_erasedTargetAndReturn(*oGetName, person);
 
             if (retStr.canViewAs<std::string>()) {
