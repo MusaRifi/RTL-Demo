@@ -1,7 +1,13 @@
 # RTL-Demo
 
+[![License: MIT](https://img.shields.io/badge/License-MIT-2EA44F?logo=open-source-initiative&logoColor=white)](LICENSE)
+&nbsp;
+[![CMake](https://img.shields.io/badge/CMake-Enabled-064F8C?logo=cmake&logoColor=white)](https://cmake.org)
+&nbsp;
+[![C++20](https://img.shields.io/badge/C%2B%2B-20-00599C?logo=c%2B%2B&logoColor=white)](https://isocpp.org)
+
 A minimal, self-contained demonstration of the
-**Reflection Template Library (RTL)** for C++.
+**[Reflection Template Library (RTL)](https://github.com/ReflectCxx/ReflectionTemplateLibrary-CPP)** for C++.
 
 This repository showcases RTL’s core capabilities using a simple, focused project setup.
 
@@ -64,7 +70,3 @@ cmake --build .
 The full Reflection Template Library, including advanced features, benchmarks, and tests, is available here:
 
 [https://github.com/ReflectCxx/ReflectionTemplateLibrary-CPP](https://github.com/ReflectCxx/ReflectionTemplateLibrary-CPP)
-
----
-
-MIT License
