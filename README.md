@@ -77,6 +77,7 @@ The full Reflection Template Library, including advanced features, benchmarks, a
 &nbsp;
 [![RTL Syntax & Semantics](https://img.shields.io/badge/Doc-Syntax_&_Semantics-blueviolet)](./docs/RTL_SYNTAX_AND_SEMANTICS.md)
 &nbsp;
-[![Benchmark Summary](https://img.shields.io/badge/Doc-Benchmark%20Summary-blue)](./docs/benchmark_summary.md)
+[![Benchmark Summary](https://img.shields.io/badge/Doc-Benchmark%20Summary-teal)](./docs/benchmark_summary.md)
+
 
 
