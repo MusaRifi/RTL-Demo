@@ -70,3 +70,9 @@ cmake --build .
 The full Reflection Template Library, including advanced features, benchmarks, and tests, is available here:
 
 [https://github.com/ReflectCxx/ReflectionTemplateLibrary-CPP](https://github.com/ReflectCxx/ReflectionTemplateLibrary-CPP)
+
+👉 Deep Dive
+
+[![Design Traits](https://img.shields.io/badge/Doc-Design%20Traits-blue)](./docs/DESIGN_PRINCIPLES_AND_FEATURES.md)
+&nbsp;
+[![RTL Syntax & Semantics](https://img.shields.io/badge/Doc-Syntax_&_Semantics-blueviolet)](./docs/RTL_SYNTAX_AND_SEMANTICS.md)
